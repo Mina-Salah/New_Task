@@ -30,9 +30,22 @@ namespace Task_1.Controllers
             return View(student);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            // استرجاع آخر كود طالب
+            var lastCode = await _studentService.GetLastStudentCodeAsync();
+
+            // زيادة الكود بواحد
+            var newCodeNumber = int.Parse(lastCode.Split('-')[1]) + 1;
+            var newCode = $"STD-{newCodeNumber:D3}";
+
+            // إنشاء نموذج جديد وتعيين الكود
+            var student = new Student
+            {
+                Code = newCode
+            };
+
+            return View(student);
         }
 
         [HttpPost]

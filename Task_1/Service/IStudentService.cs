@@ -9,5 +9,6 @@ namespace Task_1.Service
         Task AddStudentAsync(Student student);
         Task UpdateStudentAsync(Student student);
         Task DeleteStudentAsync(int id);
+        Task<string> GetLastStudentCodeAsync();
     }
 }

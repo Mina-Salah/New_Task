@@ -10,11 +10,11 @@ namespace Task_1.AutoMapper
         public MappingProfile()
         {
             // تحويل من الكيان Student إلى StudentCoursesViewModel والعكس
-            CreateMap<Student, StudentCoursesViewModel>()
-                .ForMember(dest => dest.StudentName, opt => opt.MapFrom(src => src.Name));
+            //CreateMap<Student, StudentCoursesViewModel>()
+            //    .ForMember(dest => dest.StudentName, opt => opt.MapFrom(src => src.Name));
 
-            CreateMap<Course, StudentCoursesViewModel>()
-                .ForMember(dest => dest.CourseNames, opt => opt.MapFrom(src => new List<string> { src.Name }));
+            //CreateMap<Course, StudentCoursesViewModel>()
+            //    .ForMember(dest => dest.CourseNames, opt => opt.MapFrom(src => new List<string> { src.Name }));
         }
     }
 }

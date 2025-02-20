@@ -1,45 +1,75 @@
-﻿using Task_1.Models;
-using Task_1.UnitOfWork;
+﻿using Microsoft.EntityFrameworkCore;
+using Task_1.Models;
+using Task_1.Context;
 
 namespace Task_1.Service
 {
     public class StudentService : IStudentService
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly ApplicationDbContext _context;
 
-        public StudentService(IUnitOfWork unitOfWork)
+        public StudentService(ApplicationDbContext context)
         {
-            _unitOfWork = unitOfWork;
+            _context = context;
         }
 
         public async Task<IEnumerable<Student>> GetAllStudentsAsync()
         {
-            return await _unitOfWork.Students.GetAllAsync();
+            return await _context.Students.ToListAsync();
         }
 
         public async Task<Student> GetStudentByIdAsync(int id)
         {
-            return await _unitOfWork.Students.GetByIdAsync(id);
+            return await _context.Students.FindAsync(id);
         }
 
         public async Task AddStudentAsync(Student student)
         {
-            await _unitOfWork.Students.AddAsync(student);
-            await _unitOfWork.CompleteAsync();
+            // استرجاع آخر كود طالب
+            var lastCode = await GetLastStudentCodeAsync();
+
+            // زيادة الكود بواحد
+            var newCodeNumber = int.Parse(lastCode.Split('-')[1]) + 1;
+            var newCode = $"STD-{newCodeNumber:D3}";
+
+            // تعيين الكود للطالب الجديد
+            student.Code = newCode;
+
+            // إضافة الطالب إلى قاعدة البيانات
+            _context.Students.Add(student);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<string> GetLastStudentCodeAsync()
+        {
+            var lastStudent = await _context.Students
+                .OrderByDescending(s => s.Code)
+                .FirstOrDefaultAsync();
+
+            if (lastStudent == null || string.IsNullOrEmpty(lastStudent.Code))
+            {
+                return "STD-000"; // إذا لم يكن هناك طلاب، نبدأ من STD-000
+            }
+
+            return lastStudent.Code;
         }
 
         public async Task UpdateStudentAsync(Student student)
         {
-            _unitOfWork.Students.Update(student);
-            await _unitOfWork.CompleteAsync();
+            _context.Students.Update(student);
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteStudentAsync(int id)
         {
-            var student = await _unitOfWork.Students.GetByIdAsync(id);
-            _unitOfWork.Students.Delete(student);
-            await _unitOfWork.CompleteAsync();
+            var student = await _context.Students.FindAsync(id);
+            if (student != null)
+            {
+                _context.Students.Remove(student);
+                await _context.SaveChangesAsync();
+            }
         }
-    }
 
+   
+    }
 }

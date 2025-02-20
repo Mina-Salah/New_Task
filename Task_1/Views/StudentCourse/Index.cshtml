@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Task_1.Models.StudentCourse>
+﻿@model IEnumerable<Task_1.ViewModel.StudentCoursesListViewModel>
 
 @{
     ViewBag.Title = "Student Courses List";
@@ -9,29 +9,22 @@
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Student.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Course.Id)
-            </th>
+            <th>Student</th>
+            <th>Courses</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
+            var courses = string.Join(", ", item.CourseNames);
             <tr>
+                <td>@item.StudentName</td>
+                <td>@courses</td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Student.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Course.Name)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.StudentId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.StudentId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.StudentId">Delete</a>
                 </td>
             </tr>
         }
