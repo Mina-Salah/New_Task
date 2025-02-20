@@ -1,0 +1,29 @@
+﻿@model IEnumerable<Task_1.Models.Student>
+
+<h2>قائمة الطلاب</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>الاسم</th>
+            <th>البريد الإلكتروني</th>
+            <th>الإجراءات</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var student in Model)
+        {
+            <tr>
+                <td>@student.Name</td>
+                <td>@student.Email</td>
+                <td>
+                    <a href="@Url.Action("Details", "Student", new { id = student.Id })" class="btn btn-info">عرض</a>
+                    <a href="@Url.Action("Edit", "Student", new { id = student.Id })" class="btn btn-warning">تعديل</a>
+                    <a href="@Url.Action("Delete", "Student", new { id = student.Id })" class="btn btn-danger">حذف</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Create", "Student")" class="btn btn-primary">إضافة طالب جديد</a>
