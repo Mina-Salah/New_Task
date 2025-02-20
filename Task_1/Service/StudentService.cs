@@ -56,9 +56,22 @@ namespace Task_1.Service
 
         public async Task UpdateStudentAsync(Student student)
         {
-            _context.Students.Update(student);
+            // التأكد من وجود الطالب في قاعدة البيانات
+            var existingStudent = await _context.Students.FindAsync(student.Id);
+            if (existingStudent == null)
+            {
+                throw new Exception("Student not found");
+            }
+
+            // تحديث البيانات الأخرى باستثناء الكود
+            existingStudent.Name = student.Name;
+            // يمكنك إضافة المزيد من الحقول إذا كانت موجودة
+
+            // تحديث بيانات الطالب في قاعدة البيانات
+            _context.Students.Update(existingStudent);
             await _context.SaveChangesAsync();
         }
+
 
         public async Task DeleteStudentAsync(int id)
         {

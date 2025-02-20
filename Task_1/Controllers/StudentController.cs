@@ -67,6 +67,17 @@ namespace Task_1.Controllers
             {
                 return NotFound();
             }
+
+            // استرجاع آخر كود طالب
+            var lastCode = await _studentService.GetLastStudentCodeAsync();
+
+            // زيادة الكود بواحد
+            var newCodeNumber = int.Parse(lastCode.Split('-')[1]) + 1;
+            var newCode = $"STD-{newCodeNumber:D3}";
+
+            // تعيين الكود الجديد للطالب
+            student.Code = newCode;
+
             return View(student);
         }
 
@@ -81,11 +92,13 @@ namespace Task_1.Controllers
 
             if (ModelState.IsValid)
             {
+                // لا ننسى هنا أن يتم تحديث كود الطالب مع بقية البيانات
                 await _studentService.UpdateStudentAsync(student);
                 return RedirectToAction(nameof(Index));
             }
             return View(student);
         }
+
 
         public async Task<IActionResult> Delete(int id)
         {
